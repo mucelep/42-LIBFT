@@ -1,44 +1,106 @@
-# FT_PRINTF
+# LIBFT
 
 *This project has been created as part of the 42 curriculum by mucelep.*
 
 ---
 
-## 📋 ENGLISH VERSION
+## 🌐 ENGLISH VERSION
 
 ## Description
 
-**ft_printf** is a reimplementation of the standard C `printf()` function. The goal of this project is to understand and implement **variadic functions** in C while reproducing the behavior of the original `printf` from the C standard library (libc).
+Libft is the first personal C library project at 42. The goal is to **reimplement a selection of standard C library functions** and create additional useful functions, including **linked list operations**.
 
-This implementation supports the mandatory conversions required by the subject and mimics the behavior of the original `printf` for those conversions.
-
-### Supported Conversions:
-- `%c` → Character
-- `%s` → String
-- `%p` → Pointer (hexadecimal format)
-- `%d` → Decimal number
-- `%i` → Integer (base 10)
-- `%u` → Unsigned decimal
-- `%x` → Hexadecimal (lowercase)
-- `%X` → Hexadecimal (uppercase)
-- `%%` → Percent sign
-
-The project does **not** implement buffer management like the original `printf`.
+This project helps build a solid foundation in **memory management, pointers, and low-level string handling**, while encouraging modular and reusable code design.
 
 ---
 
-## 🚀 Installation
-```bash
-git clone [your-repository-url]
-cd ft_printf
-make
+## 🎯 Objectives
+
+- Deepen understanding of **malloc, free, and pointer manipulation**
+- Learn **string and memory handling** at a low level
+- Write **reusable, well-structured C functions**
+- Understand how standard functions work internally without using existing libc implementations
+
+---
+
+## 📚 Library Scope
+
+The library covers:
+- **Character type checks** (isalpha, isdigit, etc.)
+- **String manipulation** (strlen, strlcpy, strlcat, etc.)
+- **Memory operations** (memset, memcpy, memmove, bzero)
+- **Data conversion** (atoi, itoa)
+- **Output to file descriptors** (putchar_fd, putstr_fd, putendl_fd, putnbr_fd)
+- **Linked list operations** (ft_lstnew, ft_lstadd_front/back, ft_lstdelone, ft_lstclear, ft_lstiter, ft_lstmap)
+
+---
+
+## 🏗️ Library Structure
+
+All functions follow the **42 Norm** and are implemented in C. The library is designed to be:
+- **Modular**
+- **Reusable**
+- **Easy to integrate** into other C projects
+
+### Part 1 – Standard C Library Functions
+
+Reimplementations of commonly used functions, including character checks, string handling, memory operations, and conversions.
+
+> ⚠️ **Note:** Some functions like `strlcpy`, `strlcat`, and `bzero` are not included by default in glibc and may require `<bsd/string.h>` and `-lbsd` to test against the system version.
+
+### Part 2 – Additional Functions
+
+Functions not present in standard libc or implemented differently, focusing on **dynamic memory allocation** and safe memory handling:
+
+**String operations:**
+- `ft_substr` - Extract substring from string
+- `ft_strjoin` - Concatenate two strings
+- `ft_strtrim` - Trim characters from both ends
+- `ft_split` - Split string by delimiter
+- `ft_strmapi` - Apply function to each character (with index)
+- `ft_striteri` - Iterate over string with function
+
+**Conversion:**
+- `ft_itoa` - Convert integer to string
+
+**File descriptor output:**
+- `ft_putchar_fd` - Output character to fd
+- `ft_putstr_fd` - Output string to fd
+- `ft_putendl_fd` - Output string with newline to fd
+- `ft_putnbr_fd` - Output number to fd
+
+### Part 3 – Linked List Functions (Bonus)
+
+Implements a singly linked list (`t_list` structure) to manage dynamic data structures:
+```c
+typedef struct s_list
+{
+    void            *content;
+    struct s_list   *next;
+}   t_list;
 ```
 
-This will generate: `libftprintf.a`
+**Available operations:**
+- `ft_lstnew` - Create new node
+- `ft_lstadd_front` - Add node at beginning
+- `ft_lstadd_back` - Add node at end
+- `ft_lstsize` - Count number of nodes
+- `ft_lstlast` - Return last node
+- `ft_lstdelone` - Delete single node
+- `ft_lstclear` - Delete and free entire list
+- `ft_lstiter` - Apply function to each node
+- `ft_lstmap` - Apply function and create new list
 
 ---
 
 ## 🛠️ Compilation
+
+### Build the Library
+```bash
+make
+```
+
+This generates the static library `libft.a` using `cc` with `-Wall -Wextra -Werror`.
 
 ### Makefile Rules
 
@@ -47,9 +109,8 @@ This will generate: `libftprintf.a`
 | `make` or `make all` | Compile the library |
 | `make clean` | Remove object files |
 | `make fclean` | Remove object files and library |
-| `make re` | Recompile everything |
-
-The library is created using the `ar` command as required by the subject.
+| `make re` | Rebuild library |
+| `make bonus` | Compile with bonus (linked list) functions |
 
 ---
 
@@ -57,100 +118,41 @@ The library is created using the `ar` command as required by the subject.
 
 ### Basic Example
 ```c
-#include "ft_printf.h"
+#include "libft.h"
 
 int main(void)
 {
-    ft_printf("Hello %s!\n", "World");
-    ft_printf("Number: %d\n", 42);
-    ft_printf("Hex: %x\n", 255);
+    char *str = ft_strdup("Hello, 42!");
+    ft_putstr_fd(str, 1);
+    free(str);
     return (0);
 }
 ```
 
 **Compile with:**
 ```bash
-cc main.c libftprintf.a
+cc main.c libft.a
 ./a.out
 ```
 
-### Detailed Examples
+### Linked List Example
 ```c
-// Character and String
-ft_printf("Character: %c\n", 'A');              // Character: A
-ft_printf("String: %s\n", "42 Network");        // String: 42 Network
-ft_printf("NULL string: %s\n", NULL);           // NULL string: (null)
+#include "libft.h"
 
-// Numbers
-ft_printf("Decimal: %d\n", -42);                // Decimal: -42
-ft_printf("Integer: %i\n", 2147483647);         // Integer: 2147483647
-ft_printf("Unsigned: %u\n", 4294967295);        // Unsigned: 4294967295
-
-// Hexadecimal
-ft_printf("Hex lower: %x\n", 255);              // Hex lower: ff
-ft_printf("Hex upper: %X\n", 255);              // Hex upper: FF
-
-// Pointer
-void *ptr = &main;
-ft_printf("Pointer: %p\n", ptr);                // Pointer: 0x7fff5fbff710
-ft_printf("NULL pointer: %p\n", NULL);          // NULL pointer: (nil)
-
-// Percent
-ft_printf("Percentage: 100%%\n");               // Percentage: 100%
-
-// Return value
-int len = ft_printf("Total chars: %d\n", 42);   // Returns number of printed chars
-```
-
----
-
-## ⚙️ Implementation Details
-
-### Variadic Arguments
-This project uses:
-- `va_start` - Initialize argument list
-- `va_arg` - Access next argument
-- `va_end` - Clean up argument list
-
-to handle a variable number of arguments.
-
-### Structure & Algorithm
-
-The implementation follows a modular and extensible parsing strategy.
-
-> 🔎 **Core workflow:**
-> 1. Iterate through the format string character by character.
-> 2. When a `%` symbol is encountered, dispatch the next character to a dedicated conversion handler.
-> 3. Each conversion function processes its argument and returns the number of printed characters.
-> 4. The total output length is accumulated and returned at the end.
-
-This structure ensures clarity, separation of concerns, and easy extensibility for additional conversions.
-
-### Number Printing Strategy
-
-Numbers are printed using a recursive division-based algorithm.
-
-> ⚙ **Strategy:**
-> - Decimal numbers are recursively divided by 10.
-> - Hexadecimal numbers are recursively divided by 16.
-> - Digits are written one by one using `write()`.
-
-This approach avoids dynamic memory allocation and eliminates the need for temporary buffers, ensuring efficient and controlled low-level output.
-
-### Pointer Handling
-
-Pointers are printed in hexadecimal format with the `0x` prefix.
-
-> ⚠ **Special case:**
-> If the pointer value is `NULL`, `(nil)` is printed, strictly mimicking the behavior of the original GNU `printf`.
-
-This behavior ensures compatibility with the 42 evaluation testers.
-
-### Return Value
-
-`ft_printf` returns the **total number of characters printed**, just like the original `printf`.
-```c
-int count = ft_printf("Hello %s!", "World");  // count = 12
+int main(void)
+{
+    t_list *head = ft_lstnew("First");
+    ft_lstadd_back(&head, ft_lstnew("Second"));
+    ft_lstadd_back(&head, ft_lstnew("Third"));
+    
+    // Print list size
+    int size = ft_lstsize(head);
+    ft_putnbr_fd(size, 1);  // Output: 3
+    
+    // Clean up
+    ft_lstclear(&head, free);
+    return (0);
+}
 ```
 
 ---
@@ -159,67 +161,48 @@ int count = ft_printf("Hello %s!", "World");  // count = 12
 
 ### Recommended Testers
 
-- [printfTester](https://github.com/Tripouille/printfTester)
-- [ft_printf_tester](https://github.com/paulo-santana/ft_printf_tester)
+- [libft-unit-test](https://github.com/alelievr/libft-unit-test)
+- [libftTester](https://github.com/Tripouille/libftTester)
 - [francinette](https://github.com/xicodomingues/francinette)
+- [libft-war-machine](https://github.com/y3ll0w42/libft-war-machine)
 
 ### Manual Testing
 ```bash
-# Compare with original printf
-cc test.c libftprintf.a
+# Test with your own main.c
+cc -Wall -Wextra -Werror main.c libft.a
 ./a.out
 
-# Test edge cases
-ft_printf("%s", NULL);           # Should print: (null)
-ft_printf("%p", NULL);           # Should print: (nil) or 0x0
-ft_printf("%d", -2147483648);    # Should handle INT_MIN
-ft_printf("%u", -1);             # Should print: 4294967295
+# Compare with system functions
+cc main.c -lbsd  # for strlcpy, strlcat
 ```
 
 ---
 
-## 🎯 Memory Management
+## ⚙️ Implementation Notes
 
-> ⚠ **No dynamic memory allocation** is used for mandatory conversions.
+### Memory Management
 
-All outputs are written directly using the `write()` system call. No internal buffering or heap allocation is implemented, in accordance with the project subject requirements.
+All functions that allocate memory (`ft_strdup`, `ft_substr`, `ft_strjoin`, `ft_split`, `ft_itoa`, etc.) return `NULL` on allocation failure.
 
-This design choice ensures:
-- Predictable behavior
-- Minimal memory overhead
-- Full compliance with 42 evaluation standards
+The caller is **always responsible** for freeing allocated memory.
 
----
+### Edge Cases Handled
 
-## ⚠️ Known Limitations
+- `NULL` pointer checks where appropriate
+- Empty strings
+- Memory allocation failures
+- Integer overflow protection (where relevant)
+- Proper bounds checking
 
-- **No buffer management** (unlike the original `printf`)
-- **No flags** (`-`, `+`, `0`, `#`, ` `)
-- **No width or precision** (e.g., `%10d`, `%.5s`)
-- Only **mandatory conversions** are implemented
-- Bonus conversions are **not included** in this version
+### Linked List Memory Management
 
----
+Linked list functions use **function pointers** for content deletion:
+```c
+void ft_lstdelone(t_list *lst, void (*del)(void *));
+void ft_lstclear(t_list **lst, void (*del)(void *));
+```
 
-## 📚 Resources
-
-- `man 3 printf`
-- `man 3 stdarg`
-- ISO C documentation
-- 42 subject PDF
-- [GNU libc documentation](https://www.gnu.org/software/libc/manual/)
-
----
-
-## 🤖 AI Usage
-
-AI was used as a conceptual guide for:
-- Understanding edge cases
-- Reviewing algorithm structure
-- Verifying behavior differences with the original `printf`
-- **Assistance in writing this README documentation**
-
-**All implementation logic, debugging, and testing were performed manually.**
+This allows flexible memory management for different content types.
 
 ---
 
@@ -228,8 +211,10 @@ AI was used as a conceptual guide for:
 This project strictly follows the **42 Norm**:
 - Maximum 25 lines per function
 - Maximum 5 functions per file
-- No forbidden functions (except allowed ones: `write`, `malloc`, `free`, `va_*`)
-- Proper error handling
+- Maximum 4 parameters per function
+- No forbidden functions (only standard libc allowed)
+- Proper variable declarations
+- No variable declarations in the middle of a function
 ```bash
 norminette *.c *.h
 # Should return: No errors found
@@ -237,17 +222,39 @@ norminette *.c *.h
 
 ---
 
+## 📚 Resources
+
+- [42 Libft Subject](https://cdn.intra.42.fr/pdf/pdf/960/libft.en.pdf)
+- Linux man pages (`man 3 function_name`)
+- [C programming references](https://en.cppreference.com/w/c)
+- [Understanding pointers in C](https://www.tutorialspoint.com/cprogramming/c_pointers.htm)
+
+---
+
+## 🤖 AI Usage
+
+AI tools were used as a learning aid for:
+- Understanding function behavior and edge cases
+- Explaining C concepts (pointers, memory management, data structures)
+- Clarifying standard library function specifications
+- **Assistance in writing this README documentation**
+
+**No source code was generated by AI. All implementations are written manually by the author.**
+
+---
+
 ## 🎓 Learning Outcomes
 
 This project strengthens understanding of:
-- ✅ Variadic functions (`stdarg.h`)
-- ✅ Recursion techniques
-- ✅ Low-level output with `write()`
-- ✅ Format string parsing
+- ✅ Dynamic memory allocation (`malloc`, `free`)
+- ✅ Pointer arithmetic and manipulation
+- ✅ String handling at a low level
+- ✅ Data structures (linked lists)
+- ✅ Function pointers
+- ✅ File descriptor operations
 - ✅ Defensive programming in C
-- ✅ Modular code design
 
-**ft_printf** is a fundamental building block for future 42 projects.
+**Libft** serves as a foundation for all future 42 projects and can be extended and reused throughout the curriculum.
 
 ---
 
@@ -268,41 +275,103 @@ This project is part of the 42 curriculum and follows the school's academic poli
 ---
 ---
 
-## 📋 TÜRKÇE VERSİYON
+## 🇹🇷 TÜRKÇE VERSİYON
 
 ## Açıklama
 
-**ft_printf**, standart C `printf()` fonksiyonunun yeniden implementasyonudur. Bu projenin amacı, C'de **değişken sayıda argüman alan fonksiyonları** (variadic functions) anlamak ve uygulamak, aynı zamanda C standart kütüphanesindeki (libc) orijinal `printf` davranışını yeniden üretmektir.
+Libft, 42'deki ilk kişisel C kütüphanesi projesidir. Amaç, **standart C kütüphane fonksiyonlarının bir kısmını yeniden yazmak** ve ayrıca **bağlı liste işlemleri** dahil olmak üzere faydalı fonksiyonlar oluşturmaktır.
 
-Bu implementasyon, konunun gerektirdiği zorunlu dönüşümleri destekler ve bu dönüşümler için orijinal `printf` davranışını taklit eder.
-
-### Desteklenen Dönüşümler:
-- `%c` → Karakter
-- `%s` → String (Metin)
-- `%p` → İşaretçi (hexadecimal format)
-- `%d` → Ondalık sayı
-- `%i` → Tamsayı (taban 10)
-- `%u` → İşaretsiz ondalık sayı
-- `%x` → Hexadecimal (küçük harf)
-- `%X` → Hexadecimal (büyük harf)
-- `%%` → Yüzde işareti
-
-Proje, orijinal `printf` gibi **buffer yönetimi uygulamaz**.
+Bu proje, **hafıza yönetimi, pointer'lar ve düşük seviyeli string işlemleri** konusunda sağlam bir temel oluşturmayı ve modüler, tekrar kullanılabilir kod tasarımını teşvik eder.
 
 ---
 
-## 🚀 Kurulum
-```bash
-git clone [repository-url'niz]
-cd ft_printf
-make
+## 🎯 Amaçlar
+
+- **malloc, free ve pointer kullanımı** konularında derinlemesine bilgi edinmek
+- Düşük seviyede **string ve hafıza yönetimi** öğrenmek
+- **Tekrar kullanılabilir, iyi yapılandırılmış C fonksiyonları** yazmak
+- Mevcut libc implementasyonlarını kullanmadan standart fonksiyonların iç işleyişini anlamak
+
+---
+
+## 📚 Kütüphane Kapsamı
+
+Kütüphane şunları kapsar:
+- **Karakter tipi kontrolleri** (isalpha, isdigit, vb.)
+- **String işlemleri** (strlen, strlcpy, strlcat, vb.)
+- **Hafıza işlemleri** (memset, memcpy, memmove, bzero)
+- **Veri dönüştürme** (atoi, itoa)
+- **Dosya tanımlayıcılarına çıktı** (putchar_fd, putstr_fd, putendl_fd, putnbr_fd)
+- **Bağlı liste işlemleri** (ft_lstnew, ft_lstadd_front/back, ft_lstdelone, ft_lstclear, ft_lstiter, ft_lstmap)
+
+---
+
+## 🏗️ Kütüphane Yapısı
+
+Tüm fonksiyonlar **42 Norm**'a uygun ve C dilinde yazılmıştır. Kütüphane:
+- **Modüler**
+- **Tekrar kullanılabilir**
+- **Diğer C projelerine kolayca entegre edilebilir**
+
+### Bölüm 1 – Standart C Kütüphane Fonksiyonları
+
+Sık kullanılan fonksiyonların yeniden yazımları, karakter kontrolleri, string işlemleri, hafıza işlemleri ve dönüşümleri içerir.
+
+> ⚠️ **Not:** Bazı fonksiyonlar (`strlcpy`, `strlcat`, `bzero`) glibc'de varsayılan olarak bulunmaz ve sistemde test etmek için `<bsd/string.h>` ve `-lbsd` gerekebilir.
+
+### Bölüm 2 – Ek Fonksiyonlar
+
+Standart libc'de bulunmayan veya farklı şekilde uygulanan fonksiyonlar, **dinamik bellek kullanımı** ve güvenli hafıza yönetimi odaklıdır:
+
+**String işlemleri:**
+- `ft_substr` - String'den alt string çıkar
+- `ft_strjoin` - İki string'i birleştir
+- `ft_strtrim` - Her iki uçtan karakter kırp
+- `ft_split` - String'i ayırıcıya göre böl
+- `ft_strmapi` - Her karaktere (index ile) fonksiyon uygula
+- `ft_striteri` - String üzerinde fonksiyonla yinele
+
+**Dönüştürme:**
+- `ft_itoa` - Tamsayıyı string'e çevir
+
+**Dosya tanımlayıcı çıktısı:**
+- `ft_putchar_fd` - Karakteri fd'ye yazdır
+- `ft_putstr_fd` - String'i fd'ye yazdır
+- `ft_putendl_fd` - String'i yeni satır ile fd'ye yazdır
+- `ft_putnbr_fd` - Sayıyı fd'ye yazdır
+
+### Bölüm 3 – Bağlı Liste Fonksiyonları (Bonus)
+
+Dinamik veri yapılarını yönetmek için tek yönlü bağlı liste (`t_list` yapısı) uygular:
+```c
+typedef struct s_list
+{
+    void            *content;
+    struct s_list   *next;
+}   t_list;
 ```
 
-Bu komut şunu oluşturacak: `libftprintf.a`
+**Mevcut işlemler:**
+- `ft_lstnew` - Yeni düğüm oluştur
+- `ft_lstadd_front` - Başa düğüm ekle
+- `ft_lstadd_back` - Sona düğüm ekle
+- `ft_lstsize` - Düğüm sayısını say
+- `ft_lstlast` - Son düğümü döndür
+- `ft_lstdelone` - Tek düğüm sil
+- `ft_lstclear` - Tüm listeyi sil ve temizle
+- `ft_lstiter` - Her düğüme fonksiyon uygula
+- `ft_lstmap` - Fonksiyon uygula ve yeni liste oluştur
 
 ---
 
 ## 🛠️ Derleme
+
+### Kütüphaneyi Oluştur
+```bash
+make
+```
+
+Bu komut `cc` ile `-Wall -Wextra -Werror` bayraklarını kullanarak `libft.a` statik kütüphanesini oluşturur.
 
 ### Makefile Kuralları
 
@@ -311,9 +380,8 @@ Bu komut şunu oluşturacak: `libftprintf.a`
 | `make` veya `make all` | Kütüphaneyi derle |
 | `make clean` | Object dosyalarını sil |
 | `make fclean` | Object dosyalarını ve kütüphaneyi sil |
-| `make re` | Her şeyi yeniden derle |
-
-Kütüphane, konunun gerektirdiği şekilde `ar` komutu kullanılarak oluşturulur.
+| `make re` | Kütüphaneyi yeniden derle |
+| `make bonus` | Bonus (bağlı liste) fonksiyonlarıyla derle |
 
 ---
 
@@ -321,100 +389,41 @@ Kütüphane, konunun gerektirdiği şekilde `ar` komutu kullanılarak oluşturul
 
 ### Basit Örnek
 ```c
-#include "ft_printf.h"
+#include "libft.h"
 
 int main(void)
 {
-    ft_printf("Merhaba %s!\n", "Dünya");
-    ft_printf("Sayı: %d\n", 42);
-    ft_printf("Hex: %x\n", 255);
+    char *str = ft_strdup("Merhaba, 42!");
+    ft_putstr_fd(str, 1);
+    free(str);
     return (0);
 }
 ```
 
 **Derleme:**
 ```bash
-cc main.c libftprintf.a
+cc main.c libft.a
 ./a.out
 ```
 
-### Detaylı Örnekler
+### Bağlı Liste Örneği
 ```c
-// Karakter ve String
-ft_printf("Karakter: %c\n", 'A');              // Karakter: A
-ft_printf("String: %s\n", "42 Network");       // String: 42 Network
-ft_printf("NULL string: %s\n", NULL);          // NULL string: (null)
+#include "libft.h"
 
-// Sayılar
-ft_printf("Ondalık: %d\n", -42);               // Ondalık: -42
-ft_printf("Tamsayı: %i\n", 2147483647);        // Tamsayı: 2147483647
-ft_printf("İşaretsiz: %u\n", 4294967295);      // İşaretsiz: 4294967295
-
-// Hexadecimal
-ft_printf("Hex küçük: %x\n", 255);             // Hex küçük: ff
-ft_printf("Hex büyük: %X\n", 255);             // Hex büyük: FF
-
-// İşaretçi
-void *ptr = &main;
-ft_printf("İşaretçi: %p\n", ptr);              // İşaretçi: 0x7fff5fbff710
-ft_printf("NULL işaretçi: %p\n", NULL);        // NULL işaretçi: (nil)
-
-// Yüzde
-ft_printf("Yüzde: 100%%\n");                   // Yüzde: 100%
-
-// Dönüş değeri
-int len = ft_printf("Toplam karakter: %d\n", 42);   // Yazdırılan karakter sayısını döner
-```
-
----
-
-## ⚙️ Implementasyon Detayları
-
-### Değişken Argümanlar (Variadic Arguments)
-Bu proje şunları kullanır:
-- `va_start` - Argüman listesini başlat
-- `va_arg` - Sonraki argümana eriş
-- `va_end` - Argüman listesini temizle
-
-Değişken sayıda argümanı işlemek için bu makrolar kullanılır.
-
-### Yapı & Algoritma
-
-Implementasyon, modüler ve genişletilebilir bir parsing stratejisi izler.
-
-> 🔎 **Temel iş akışı:**
-> 1. Format string'i karakter karakter dolaş.
-> 2. Bir `%` sembolü ile karşılaşıldığında, bir sonraki karakteri ilgili dönüşüm işleyicisine gönder.
-> 3. Her dönüşüm fonksiyonu argümanını işler ve yazdırılan karakter sayısını döner.
-> 4. Toplam çıktı uzunluğu biriktirilir ve sonunda döndürülür.
-
-Bu yapı, netlik, endişelerin ayrılması ve ek dönüşümler için kolay genişletilebilirlik sağlar.
-
-### Sayı Yazdırma Stratejisi
-
-Sayılar, özyinelemeli (recursive) bölme tabanlı bir algoritma kullanılarak yazdırılır.
-
-> ⚙ **Strateji:**
-> - Ondalık sayılar özyinelemeli olarak 10'a bölünür.
-> - Hexadecimal sayılar özyinelemeli olarak 16'ya bölünür.
-> - Rakamlar `write()` kullanılarak tek tek yazılır.
-
-Bu yaklaşım, dinamik bellek tahsisinden kaçınır ve geçici buffer'lara ihtiyacı ortadan kaldırır, böylece verimli ve kontrollü düşük seviye çıktı sağlar.
-
-### İşaretçi (Pointer) İşleme
-
-İşaretçiler, `0x` öneki ile hexadecimal formatta yazdırılır.
-
-> ⚠ **Özel durum:**
-> İşaretçi değeri `NULL` ise, orijinal GNU `printf` davranışını tam olarak taklit ederek `(nil)` yazdırılır.
-
-Bu davranış, 42 değerlendirme test araçlarıyla uyumluluğu sağlar.
-
-### Dönüş Değeri
-
-`ft_printf`, orijinal `printf` gibi **yazdırılan toplam karakter sayısını** döner.
-```c
-int count = ft_printf("Merhaba %s!", "Dünya");  // count = 14
+int main(void)
+{
+    t_list *head = ft_lstnew("Birinci");
+    ft_lstadd_back(&head, ft_lstnew("İkinci"));
+    ft_lstadd_back(&head, ft_lstnew("Üçüncü"));
+    
+    // Liste boyutunu yazdır
+    int size = ft_lstsize(head);
+    ft_putnbr_fd(size, 1);  // Çıktı: 3
+    
+    // Temizlik
+    ft_lstclear(&head, free);
+    return (0);
+}
 ```
 
 ---
@@ -423,67 +432,48 @@ int count = ft_printf("Merhaba %s!", "Dünya");  // count = 14
 
 ### Önerilen Test Araçları
 
-- [printfTester](https://github.com/Tripouille/printfTester)
-- [ft_printf_tester](https://github.com/paulo-santana/ft_printf_tester)
+- [libft-unit-test](https://github.com/alelievr/libft-unit-test)
+- [libftTester](https://github.com/Tripouille/libftTester)
 - [francinette](https://github.com/xicodomingues/francinette)
+- [libft-war-machine](https://github.com/y3ll0w42/libft-war-machine)
 
 ### Manuel Test
 ```bash
-# Orijinal printf ile karşılaştır
-cc test.c libftprintf.a
+# Kendi main.c dosyanızla test edin
+cc -Wall -Wextra -Werror main.c libft.a
 ./a.out
 
-# Edge case'leri test et
-ft_printf("%s", NULL);           # Şunu yazdırmalı: (null)
-ft_printf("%p", NULL);           # Şunu yazdırmalı: (nil) veya 0x0
-ft_printf("%d", -2147483648);    # INT_MIN'i handle etmeli
-ft_printf("%u", -1);             # Şunu yazdırmalı: 4294967295
+# Sistem fonksiyonlarıyla karşılaştırın
+cc main.c -lbsd  # strlcpy, strlcat için
 ```
 
 ---
 
-## 🎯 Bellek Yönetimi
+## ⚙️ Uygulama Notları
 
-> ⚠ **Zorunlu dönüşümler için dinamik bellek tahsisi kullanılmaz.**
+### Bellek Yönetimi
 
-Tüm çıktılar doğrudan `write()` sistem çağrısı kullanılarak yazılır. Proje gereksinimlerine uygun olarak hiçbir dahili buffer veya heap tahsisi uygulanmamıştır.
+Bellek tahsis eden tüm fonksiyonlar (`ft_strdup`, `ft_substr`, `ft_strjoin`, `ft_split`, `ft_itoa`, vb.) tahsis başarısızlığında `NULL` döner.
 
-Bu tasarım seçimi şunları sağlar:
-- Öngörülebilir davranış
-- Minimal bellek yükü
-- 42 değerlendirme standartlarına tam uyum
+Tahsis edilen belleği temizlemek **her zaman çağıran kodun sorumluluğundadır**.
 
----
+### İşlenen Özel Durumlar
 
-## ⚠️ Bilinen Sınırlamalar
+- Uygun yerlerde `NULL` pointer kontrolleri
+- Boş string'ler
+- Bellek tahsis hataları
+- Tamsayı taşma koruması (ilgili yerlerde)
+- Doğru sınır kontrolleri
 
-- **Buffer yönetimi yok** (orijinal `printf`'in aksine)
-- **Flag'ler yok** (`-`, `+`, `0`, `#`, ` `)
-- **Genişlik veya hassasiyet yok** (örn: `%10d`, `%.5s`)
-- Sadece **zorunlu dönüşümler** implement edilmiştir
-- Bonus dönüşümler bu versiyonda **bulunmamaktadır**
+### Bağlı Liste Bellek Yönetimi
 
----
+Bağlı liste fonksiyonları içerik silme için **fonksiyon pointer'ları** kullanır:
+```c
+void ft_lstdelone(t_list *lst, void (*del)(void *));
+void ft_lstclear(t_list **lst, void (*del)(void *));
+```
 
-## 📚 Kaynaklar
-
-- `man 3 printf`
-- `man 3 stdarg`
-- ISO C dokümantasyonu
-- 42 konu PDF'i
-- [GNU libc dokümantasyonu](https://www.gnu.org/software/libc/manual/)
-
----
-
-## 🤖 Yapay Zeka Kullanımı
-
-Yapay zeka aşağıdakiler için kavramsal bir rehber olarak kullanılmıştır:
-- Edge case'leri anlama
-- Algoritma yapısını gözden geçirme
-- Orijinal `printf` ile davranış farklılıklarını doğrulama
-- **Bu README dokümantasyonunun yazılmasında yardımcı olma**
-
-**Tüm implementasyon mantığı, hata ayıklama ve testler manuel olarak gerçekleştirilmiştir.**
+Bu, farklı içerik tipleri için esnek bellek yönetimi sağlar.
 
 ---
 
@@ -492,8 +482,10 @@ Yapay zeka aşağıdakiler için kavramsal bir rehber olarak kullanılmıştır:
 Bu proje **42 Norm**'una kesinlikle uygundur:
 - Fonksiyon başına maksimum 25 satır
 - Dosya başına maksimum 5 fonksiyon
-- Yasak fonksiyon yok (izin verilenler hariç: `write`, `malloc`, `free`, `va_*`)
-- Uygun hata işleme
+- Fonksiyon başına maksimum 4 parametre
+- Yasak fonksiyon yok (sadece standart libc izinli)
+- Uygun değişken bildirimleri
+- Fonksiyon ortasında değişken bildirimi yok
 ```bash
 norminette *.c *.h
 # Şunu dönmeli: No errors found
@@ -501,17 +493,39 @@ norminette *.c *.h
 
 ---
 
+## 📚 Kaynaklar
+
+- [42 Libft Konusu](https://cdn.intra.42.fr/pdf/pdf/960/libft.en.pdf)
+- Linux man sayfaları (`man 3 fonksiyon_adı`)
+- [C programlama referansları](https://en.cppreference.com/w/c)
+- [C'de pointer'ları anlamak](https://www.tutorialspoint.com/cprogramming/c_pointers.htm)
+
+---
+
+## 🤖 Yapay Zeka Kullanımı
+
+Yapay zeka araçları öğrenme aracı olarak kullanıldı:
+- Fonksiyon davranışlarını ve özel durumları anlama
+- C kavramlarını açıklama (pointer'lar, bellek yönetimi, veri yapıları)
+- Standart kütüphane fonksiyon özelliklerini netleştirme
+- **Bu README dokümantasyonunun yazılmasında yardımcı olma**
+
+**Hiçbir kaynak kodu yapay zeka tarafından üretilmemiştir. Tüm uygulamalar yazar tarafından manuel olarak yazılmıştır.**
+
+---
+
 ## 🎓 Öğrenme Kazanımları
 
 Bu proje şu konularda anlayışı güçlendirir:
-- ✅ Değişken argümanlı fonksiyonlar (`stdarg.h`)
-- ✅ Özyineleme (Recursion) teknikleri
-- ✅ `write()` ile düşük seviye çıktı
-- ✅ Format string ayrıştırma (parsing)
+- ✅ Dinamik bellek tahsisi (`malloc`, `free`)
+- ✅ Pointer aritmetiği ve manipülasyonu
+- ✅ Düşük seviyede string işleme
+- ✅ Veri yapıları (bağlı listeler)
+- ✅ Fonksiyon pointer'ları
+- ✅ Dosya tanımlayıcı işlemleri
 - ✅ C'de savunmacı programlama
-- ✅ Modüler kod tasarımı
 
-**ft_printf**, gelecekteki 42 projeleri için temel bir yapı taşıdır.
+**Libft**, tüm gelecekteki 42 projeleri için bir temel oluşturur ve müfredat boyunca genişletilebilir ve yeniden kullanılabilir.
 
 ---
 
